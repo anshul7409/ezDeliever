@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { styled, useTheme, Theme, CSSObject } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import MuiDrawer from "@mui/material/Drawer";
@@ -92,11 +92,15 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-const dashboard = () => {
+export default function dashboard() {
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
   const menuItem = ["Create New Order", "Previous Orders", "Other"];
   const [drawerItem, setDrawerItem] = React.useState(0);
+  //@ts-ignore
+  const handleSetDrawerItem = (val) => {
+    setDrawerItem(val);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -104,11 +108,6 @@ const dashboard = () => {
 
   const handleDrawerClose = () => {
     setOpen(false);
-  };
-
-  //@ts-ignore
-  const handleSetDrawerItem = (val) => {
-    setDrawerItem(val);
   };
 
   return (
@@ -129,7 +128,7 @@ const dashboard = () => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            {menuItem[drawerItem]}
+            Mini variant drawer
           </Typography>
         </Toolbar>
       </AppBar>
@@ -176,7 +175,17 @@ const dashboard = () => {
           ))}
         </List>
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, p: 3, ml: 4 }}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: "50px",
+        }}
+      >
+        <DrawerHeader />
         {drawerItem === 0 ? (
           <CreateOrderForm />
         ) : drawerItem === 1 ? (
@@ -187,6 +196,4 @@ const dashboard = () => {
       </Box>
     </Box>
   );
-};
-
-export default dashboard;
+}

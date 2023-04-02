@@ -1,3 +1,4 @@
+import * as React from "react";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -7,23 +8,23 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { sendOtp, signup } from "../api/functions";
+
+import { sendOtp, signin } from "../api/functions";
 import { setAccessToken, setRefreshToken } from "../storage/io";
-import { FormEvent, useState } from "react";
 
 const theme = createTheme();
 
 export default function Signup() {
-  const [isOTP, setIsOTP] = useState(true);
-  const [isSendOTP, setIsSendOTP] = useState(true);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
+  const [isOTP, setIsOTP] = React.useState(true);
+  const [isSendOTP, setIsSendOTP] = React.useState(true);
+  //   const [firstName, setFirstName] = React.useState('');
+  //   const [lastName, setLastName] = React.useState('');
+  const [phone, setPhone] = React.useState("");
+  const [otp, setOtp] = React.useState("");
 
-  const handleSendOtp = async (event: FormEvent<HTMLFormElement>) => {
+  const handleSendOtp = async (event: React.FormEvent<HTMLFormElement>) => {
     const res = await sendOtp(phone);
-    console.log({ firstName, lastName, phone });
+    console.log({ phone });
     if (res.message === "otp sent!") {
       setIsOTP(false);
       setIsSendOTP(false);
@@ -36,11 +37,15 @@ export default function Signup() {
   };
 
   const handleSignUp = async () => {
-    const res = await signup(firstName, lastName, phone, otp);
-    if (res.message === "User created") {
-      setAccessToken(res.accessToken);
-      setRefreshToken(res.refreshToken);
-      location.href = "/dashboard";
+    try {
+      const res = await signin(phone, otp);
+      if (res.message === "success") {
+        setAccessToken(res.accessToken);
+        setRefreshToken(res.refreshToken);
+        location.href = "/dashboard";
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -50,14 +55,10 @@ export default function Signup() {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 6,
+            marginTop: 2,
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            border: "1px solid rgba(0, 0, 0, 0.2)",
-            borderRadius: 2,
           }}
         >
           <Box
@@ -65,42 +66,15 @@ export default function Signup() {
               width: "100%",
               p: 3,
               mt: 0,
-              border: "2px solid #ccc",
-              borderRadius: 2,
+              border: "1px solid #ccc",
+              borderRadius: 4,
             }}
           >
-            <Typography component="h1" variant="h5" textAlign="center">
-              Create A New Account
+            <Typography component="h1" variant="h5">
+              Sign in to your Account
             </Typography>
             <Box component="form" noValidate sx={{ mt: 3 }}>
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    autoComplete="given-name"
-                    name="firstName"
-                    required
-                    fullWidth
-                    id="firstName"
-                    label="First Name"
-                    autoFocus
-                    onChange={(e) => {
-                      setFirstName(e.target.value);
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    required
-                    fullWidth
-                    id="lastName"
-                    label="Last Name"
-                    name="lastName"
-                    autoComplete="family-name"
-                    onChange={(e) => {
-                      setLastName(e.target.value);
-                    }}
-                  />
-                </Grid>
                 <Grid item xs={12}>
                   <TextField
                     required
@@ -144,10 +118,9 @@ export default function Signup() {
                   sx={{
                     mb: 2,
                     backgroundColor: "",
-                    // "&:hover": {
-                    //   backgroundColor: "darkGreen",
-                    // },
-                    alignItems: "center",
+                    "&:hover": {
+                      backgroundColor: "darkGreen",
+                    },
                   }}
                 >
                   Send OTP
@@ -165,7 +138,7 @@ export default function Signup() {
                     },
                   }}
                 >
-                  Sign up
+                  Sign in
                 </Button>
               )}
 

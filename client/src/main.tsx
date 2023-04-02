@@ -1,11 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'
-import Signup from './components/signup'
-import Login from './components/login'
-import Dashboard from './components/dashboard'
+import ReactDOM from "react-dom/client";
+import Signup from "./components/signup";
+import Signin from "./components/Signin";
+import Dashboard from "./components/dashboard";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Home from "./components/Landingpage";
+import About from './components/AboutUs/About'
+
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
   {
@@ -20,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login/>,
+    element: <Signin />,
     children: [],
   },
   {
@@ -28,10 +31,15 @@ const router = createBrowserRouter([
     element: <Dashboard />,
     children: [],
   },
+  {
+    path: "/about",
+    element: <About />,
+    children: [],
+  },
 ]);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
+  <QueryClientProvider client={queryClient}>
     <RouterProvider router={router} />
-  </React.StrictMode>
+  </QueryClientProvider>
 );
